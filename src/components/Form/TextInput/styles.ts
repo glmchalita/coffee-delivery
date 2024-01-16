@@ -25,6 +25,8 @@ export const TextInputContainer = styled.label<{ $required?: boolean }>`
     }
   }
 
+  transition: all 0.2s;
+
   &:focus-within {
     border-color: ${({ theme }) => theme.color['yellow-700']};
 

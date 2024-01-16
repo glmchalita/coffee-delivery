@@ -23,6 +23,8 @@ export const RadioContainer = styled.label`
     color: ${({ theme }) => theme.color['purple-500']};
   }
 
+  transition: all 0.2s;
+
   &:hover {
     background-color: ${({ theme }) => theme.color['gray-500']};
     color: ${({ theme }) => theme.color['gray-800']};

@@ -18,6 +18,8 @@ export const QuantityContainer = styled.div`
     svg {
       color: ${({ theme }) => theme.color['purple-500']};
 
+      transition: all 0.2s;
+
       &:hover {
         color: ${({ theme }) => theme.color['purple-700']};
       }

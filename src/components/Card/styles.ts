@@ -81,6 +81,8 @@ export const CardOrder = styled.div`
       color: ${({ theme }) => theme.color['gray-200']};
     }
 
+    transition: all 0.2s;
+
     &:hover {
       background-color: ${({ theme }) => theme.color['purple-500']};
     }

@@ -138,6 +138,8 @@ export const InfoControls = styled.div`
       color: ${({ theme }) => theme.color['purple-500']};
     }
 
+    transition: all 0.2s;
+
     &:hover {
       color: ${({ theme }) => theme.color['gray-800']};
       background-color: ${({ theme }) => theme.color['gray-500']};
