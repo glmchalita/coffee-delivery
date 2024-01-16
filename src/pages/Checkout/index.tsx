@@ -1,3 +1,5 @@
+import { NavLink } from 'react-router-dom'
+
 import {
   Bank,
   CreditCard,
@@ -161,7 +163,9 @@ export default function Checkout() {
             </div>
           </TotalCart>
 
-          <OrderButton type="button">Confirmar pedido</OrderButton>
+          <OrderButton type="button">
+            <NavLink to="/sucess">Confirmar pedido</NavLink>
+          </OrderButton>
         </OrderCard>
       </OrderContainer>
     </CheckoutContainer>
