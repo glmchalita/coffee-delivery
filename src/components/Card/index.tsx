@@ -1,5 +1,9 @@
+import { useState } from 'react'
+
 import { ShoppingCart } from '@phosphor-icons/react'
 
+import { CartItem } from '../../contexts/CartContext'
+import { useCart } from '../../hooks/usecart'
 import QuantityInput from '../Form/QuantityInput'
 import {
   CardContainer,
@@ -22,7 +26,31 @@ interface CardProps {
     image: string
   }
 }
+
 export default function Card({ coffee }: CardProps) {
+  const { addToCart } = useCart()
+
+  const [quantity, setQuantity] = useState(1)
+
+  function handleAddToCart() {
+    const newItem: CartItem = {
+      id: coffee.id,
+      quantity,
+    }
+
+    addToCart(newItem)
+  }
+
+  function incrementQuantity() {
+    setQuantity((state) => state + 1)
+  }
+
+  function decrementQuantity() {
+    if (quantity > 1) {
+      setQuantity((state) => state - 1)
+    }
+  }
+
   return (
     <CardContainer>
       <CardImg src={coffee.image} alt={coffee.title} />
@@ -44,9 +72,13 @@ export default function Card({ coffee }: CardProps) {
         </CardPrice>
 
         <CardOrder>
-          <QuantityInput />
+          <QuantityInput
+            quantity={quantity}
+            incrementQuantity={incrementQuantity}
+            decrementQuantity={decrementQuantity}
+          />
 
-          <button type="button">
+          <button type="button" onClick={handleAddToCart}>
             <ShoppingCart size={22} weight="fill" />
           </button>
         </CardOrder>
