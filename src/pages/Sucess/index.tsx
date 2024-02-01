@@ -1,11 +1,29 @@
+import { useParams } from 'react-router-dom'
+
 import { CurrencyDollar, MapPin, Timer } from '@phosphor-icons/react'
 import { useTheme } from 'styled-components'
 
 import motoboy from '../../assets/motoboy.png'
+import { useCart } from '../../hooks/useCart'
 import { DeliveryInfo, SucessContainer } from './styles'
 
 export default function Sucess() {
+  const { orders } = useCart()
+  const { orderId } = useParams()
+
+  const orderInfo = orders.find((order) => order.id === Number(orderId))
+
+  const paymentMethod = {
+    credit: 'Cartão de crédito',
+    debit: 'Cartão de débito',
+    cash: 'Dinheiro',
+  }
+
   const theme = useTheme()
+
+  if (!orderInfo?.id) {
+    return null
+  }
 
   return (
     <SucessContainer>
@@ -23,9 +41,14 @@ export default function Sucess() {
 
             <div>
               <p>
-                Entrega em <span>Rua João Vieira Prioste, 176</span>
+                Entrega em{' '}
+                <span>
+                  {orderInfo.street}, {orderInfo.number}
+                </span>
               </p>
-              <p>Vila Carrão - São Paulo, SP</p>
+              <p>
+                {orderInfo.neighborhood} - {orderInfo.city}, {orderInfo.state}
+              </p>
             </div>
           </div>
 
@@ -50,7 +73,7 @@ export default function Sucess() {
 
             <div>
               <p>Pagamento na entrega</p>
-              <p>Cartão de Crédito</p>
+              <p>{paymentMethod[orderInfo.paymentMethod]}</p>
             </div>
           </div>
         </DeliveryInfo>

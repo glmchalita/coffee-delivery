@@ -11,7 +11,7 @@ export default function Router() {
       <Route path="/" element={<DefaultLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/sucess" element={<Sucess />} />
+        <Route path="/order/:orderId/sucess" element={<Sucess />} />
       </Route>
     </Routes>
   )

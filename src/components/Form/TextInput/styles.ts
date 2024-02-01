@@ -41,3 +41,8 @@ export const TextInputContainer = styled.label<{ $required?: boolean }>`
     color: ${({ theme }) => theme.color['gray-600']};
   }
 `
+export const ErrorMessage = styled.p`
+  font: ${({ theme }) => theme.font['text-xs']};
+  font-weight: 400;
+  color: red;
+`

@@ -1,14 +1,19 @@
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes, LegacyRef, forwardRef } from 'react'
 
 import { RadioContainer } from './styles'
 
-type RadioProps = InputHTMLAttributes<HTMLInputElement>
+type RadioProps = InputHTMLAttributes<HTMLInputElement> & {
+  isSelected: boolean
+}
 
-export default function Radio({ children, ...props }: RadioProps) {
+export const Radio = forwardRef(function Radio(
+  { children, isSelected, ...props }: RadioProps,
+  ref: LegacyRef<HTMLInputElement>,
+) {
   return (
-    <RadioContainer>
-      <input type="radio" {...props} />
+    <RadioContainer data-state={isSelected}>
+      <input type="radio" ref={ref} {...props} />
       {children}
     </RadioContainer>
   )
-}
+})

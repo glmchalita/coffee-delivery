@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
-export const HeroSection = styled.section`
+export const HeroSection = styled.section``
+
+export const HeroContent = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 3.5rem;

@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { NavLink } from 'react-router-dom'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,6 +8,7 @@ import {
   CurrencyDollar,
   MapPinLine,
   Money,
+  ShoppingBagOpen,
   Trash,
 } from '@phosphor-icons/react'
 import { useTheme } from 'styled-components'
@@ -15,13 +16,14 @@ import * as zod from 'zod'
 
 import { coffees } from '../../../data.json'
 import QuantityInput from '../../components/Form/QuantityInput'
-import Radio from '../../components/Form/Radio'
+import { Radio } from '../../components/Form/Radio'
 import { TextInput } from '../../components/Form/TextInput'
-import { useCart } from '../../hooks/usecart'
+import { useCart } from '../../hooks/useCart'
 import {
   CheckoutContainer,
   DeliveryCard,
   DetailsContainer,
+  EmptyCart,
   InfoCoffee,
   InfoControls,
   OrderButton,
@@ -32,6 +34,17 @@ import {
   SelectedCoffee,
   TotalCart,
 } from './styles'
+
+type FormInputs = {
+  cep: number
+  street: string
+  number: string
+  fullAddress: string
+  neighborhood: string
+  city: string
+  state: string
+  paymentMethod: 'credit' | 'debit' | 'cash'
+}
 
 const newOrderFormValidationSchema = zod.object({
   cep: zod.number({ invalid_type_error: 'Informe o CEP' }),
@@ -46,14 +59,28 @@ const newOrderFormValidationSchema = zod.object({
   }),
 })
 
+export type OrderInfo = zod.infer<typeof newOrderFormValidationSchema>
+
 export default function Checkout() {
   const theme = useTheme()
-  const { cart, removeFromCart, incrementQuantity, decrementQuantity } =
-    useCart()
+  const {
+    cart,
+    removeFromCart,
+    incrementQuantity,
+    decrementQuantity,
+    checkoutCart,
+  } = useCart()
 
-  const { register, handleSubmit } = useForm({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormInputs>({
     resolver: zodResolver(newOrderFormValidationSchema),
   })
+
+  const selectedPayment = watch('paymentMethod')
 
   const coffeesInCart = cart.map((item) => {
     const coffeeInfo = coffees.find((coffee) => coffee.id === item.id)
@@ -74,6 +101,8 @@ export default function Checkout() {
 
   const shippingPrice = 3.5
 
+  const isEmpty = cart.length === 0
+
   function handleRemoveFromCart(id: string) {
     removeFromCart(id)
   }
@@ -86,8 +115,10 @@ export default function Checkout() {
     decrementQuantity(id)
   }
 
-  function handleCreateNewOrder(data) {
-    console.log(data)
+  const handleCreateNewOrder: SubmitHandler<FormInputs> = (data) => {
+    console.log('Checkout')
+
+    checkoutCart(data)
   }
 
   return (
@@ -109,13 +140,15 @@ export default function Checkout() {
               placeholder="CEP"
               required
               containerProps={{ style: { gridArea: 'cep' } }}
-              {...register('cep')}
+              error={errors.cep}
+              {...register('cep', { valueAsNumber: true })}
             />
 
             <TextInput
               placeholder="Rua"
               required
               containerProps={{ style: { gridArea: 'street' } }}
+              error={errors.street}
               {...register('street')}
             />
 
@@ -123,12 +156,14 @@ export default function Checkout() {
               placeholder="Número"
               required
               containerProps={{ style: { gridArea: 'number' } }}
-              {...register('number', { valueAsNumber: true })}
+              error={errors.number}
+              {...register('number')}
             />
 
             <TextInput
               placeholder="Complemento"
               containerProps={{ style: { gridArea: 'fullAddress' } }}
+              error={errors.fullAddress}
               {...register('fullAddress')}
             />
 
@@ -136,6 +171,7 @@ export default function Checkout() {
               placeholder="Bairro"
               required
               containerProps={{ style: { gridArea: 'neighborhood' } }}
+              error={errors.neighborhood}
               {...register('neighborhood')}
             />
 
@@ -143,6 +179,7 @@ export default function Checkout() {
               placeholder="Cidade"
               required
               containerProps={{ style: { gridArea: 'city' } }}
+              error={errors.city}
               {...register('city')}
             />
 
@@ -151,7 +188,8 @@ export default function Checkout() {
               required
               maxLength={2}
               containerProps={{ style: { gridArea: 'state' } }}
-              {...register('uf')}
+              error={errors.state}
+              {...register('state')}
             />
           </form>
         </DeliveryCard>
@@ -168,17 +206,29 @@ export default function Checkout() {
           </div>
 
           <PaymentOptions>
-            <Radio>
+            <Radio
+              isSelected={selectedPayment === 'credit'}
+              {...register('paymentMethod')}
+              value="credit"
+            >
               <CreditCard size={16} />
               <span>Cartão de Crédito</span>
             </Radio>
 
-            <Radio>
+            <Radio
+              isSelected={selectedPayment === 'debit'}
+              {...register('paymentMethod')}
+              value="debit"
+            >
               <Bank size={16} />
               <span>Cartão de Débito</span>
             </Radio>
 
-            <Radio>
+            <Radio
+              isSelected={selectedPayment === 'cash'}
+              {...register('paymentMethod')}
+              value="cash"
+            >
               <Money size={16} />
               <span>Dinheiro</span>
             </Radio>
@@ -190,86 +240,102 @@ export default function Checkout() {
         <h2>Cafés selecionados</h2>
 
         <OrderCard>
-          {coffees.map((coffee) => {
-            const itemIndex = cart.findIndex((item) => item.id === coffee.id)
+          {isEmpty ? (
+            <EmptyCart>
+              <ShoppingBagOpen size={128} weight="thin" />
 
-            if (itemIndex >= 0) {
-              return (
-                <SelectedCoffee key={coffee.id}>
-                  <div>
-                    <img src={coffee.image} alt="" />
+              <span>Carrinho está vazio</span>
 
-                    <InfoCoffee>
-                      <h4>{coffee.title}</h4>
+              <OrderButton type="submit" form="order">
+                <NavLink to="/">Voltar para o início</NavLink>
+              </OrderButton>
+            </EmptyCart>
+          ) : (
+            <>
+              {coffees.map((coffee) => {
+                const itemIndex = cart.findIndex(
+                  (item) => item.id === coffee.id,
+                )
 
-                      <InfoControls>
-                        <QuantityInput
-                          quantity={cart[itemIndex].quantity}
-                          incrementQuantity={() =>
-                            handleIncrementQuantity(coffee.id)
-                          }
-                          decrementQuantity={() =>
-                            handleDecrementQuantity(coffee.id)
-                          }
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveFromCart(coffee.id)}
-                        >
-                          <Trash size={16} />
-                          Remover
-                        </button>
-                      </InfoControls>
-                    </InfoCoffee>
-                  </div>
+                if (itemIndex >= 0) {
+                  return (
+                    <SelectedCoffee key={coffee.id}>
+                      <div>
+                        <img src={coffee.image} alt="" />
 
-                  <span>R$ {coffee.price.toFixed(2)}</span>
-                </SelectedCoffee>
-              )
-            } else {
-              return null
-            }
-          })}
+                        <InfoCoffee>
+                          <h4>{coffee.title}</h4>
 
-          <hr />
+                          <InfoControls>
+                            <QuantityInput
+                              quantity={cart[itemIndex].quantity}
+                              incrementQuantity={() =>
+                                handleIncrementQuantity(coffee.id)
+                              }
+                              decrementQuantity={() =>
+                                handleDecrementQuantity(coffee.id)
+                              }
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFromCart(coffee.id)}
+                            >
+                              <Trash size={16} />
+                              Remover
+                            </button>
+                          </InfoControls>
+                        </InfoCoffee>
+                      </div>
 
-          <TotalCart>
-            <div>
-              <span>Total de itens</span>
-              <span>
-                {new Intl.NumberFormat('pt-br', {
-                  currency: 'BRL',
-                  style: 'currency',
-                }).format(totalItensPrice)}
-              </span>
-            </div>
+                      <span>R$ {coffee.price.toFixed(2)}</span>
+                    </SelectedCoffee>
+                  )
+                } else {
+                  return null
+                }
+              })}
 
-            <div>
-              <span>Entrega</span>
-              <span>
-                {' '}
-                {new Intl.NumberFormat('pt-br', {
-                  currency: 'BRL',
-                  style: 'currency',
-                }).format(shippingPrice)}
-              </span>
-            </div>
+              <hr />
 
-            <div>
-              <span>Total</span>
-              <span>
-                {' '}
-                {new Intl.NumberFormat('pt-br', {
-                  currency: 'BRL',
-                  style: 'currency',
-                }).format(totalItensPrice + shippingPrice)}
-              </span>
-            </div>
-          </TotalCart>
+              <TotalCart>
+                <div>
+                  <span>Total de itens</span>
+                  <span>
+                    {new Intl.NumberFormat('pt-br', {
+                      currency: 'BRL',
+                      style: 'currency',
+                    }).format(totalItensPrice)}
+                  </span>
+                </div>
 
-          <OrderButton type="submit" form="order">
-            <NavLink to="/sucess">Confirmar pedido</NavLink>
-          </OrderButton>
+                <div>
+                  <span>Entrega</span>
+                  <span>
+                    {' '}
+                    {new Intl.NumberFormat('pt-br', {
+                      currency: 'BRL',
+                      style: 'currency',
+                    }).format(shippingPrice)}
+                  </span>
+                </div>
+
+                <div>
+                  <span>Total</span>
+                  <span>
+                    {' '}
+                    {new Intl.NumberFormat('pt-br', {
+                      currency: 'BRL',
+                      style: 'currency',
+                    }).format(totalItensPrice + shippingPrice)}
+                  </span>
+                </div>
+              </TotalCart>
+
+              <OrderButton type="submit" form="order">
+                Confirmar pedido
+              </OrderButton>
+            </>
+          )}
         </OrderCard>
       </OrderContainer>
     </CheckoutContainer>

@@ -29,4 +29,9 @@ export const RadioContainer = styled.label`
     background-color: ${({ theme }) => theme.color['gray-500']};
     color: ${({ theme }) => theme.color['gray-800']};
   }
+
+  &[data-state='true'] {
+    background-color: ${({ theme }) => theme.color['purple-300']};
+    border-color: ${({ theme }) => theme.color['purple-500']};
+  }
 `

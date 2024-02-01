@@ -192,3 +192,23 @@ export const OrderButton = styled.button`
     background-color: ${({ theme }) => theme.color['yellow-700']};
   }
 `
+
+export const EmptyCart = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+
+  svg {
+    color: ${({ theme }) => theme.color['yellow-500']};
+  }
+
+  span {
+    color: ${({ theme }) => theme.color['gray-600']};
+    font: ${({ theme }) => theme.font['text-l']};
+  }
+
+  button {
+    width: 100%;
+  }
+`
