@@ -136,61 +136,63 @@ export default function Checkout() {
           </div>
 
           <form id="order" onSubmit={handleSubmit(handleCreateNewOrder)}>
-            <TextInput
-              placeholder="CEP"
-              required
-              containerProps={{ style: { gridArea: 'cep' } }}
-              error={errors.cep}
-              {...register('cep', { valueAsNumber: true })}
-            />
+            <fieldset disabled={isEmpty}>
+              <TextInput
+                placeholder="CEP"
+                required
+                containerProps={{ style: { gridArea: 'cep' } }}
+                error={errors.cep}
+                {...register('cep', { valueAsNumber: true })}
+              />
 
-            <TextInput
-              placeholder="Rua"
-              required
-              containerProps={{ style: { gridArea: 'street' } }}
-              error={errors.street}
-              {...register('street')}
-            />
+              <TextInput
+                placeholder="Rua"
+                required
+                containerProps={{ style: { gridArea: 'street' } }}
+                error={errors.street}
+                {...register('street')}
+              />
 
-            <TextInput
-              placeholder="Número"
-              required
-              containerProps={{ style: { gridArea: 'number' } }}
-              error={errors.number}
-              {...register('number')}
-            />
+              <TextInput
+                placeholder="Número"
+                required
+                containerProps={{ style: { gridArea: 'number' } }}
+                error={errors.number}
+                {...register('number')}
+              />
 
-            <TextInput
-              placeholder="Complemento"
-              containerProps={{ style: { gridArea: 'fullAddress' } }}
-              error={errors.fullAddress}
-              {...register('fullAddress')}
-            />
+              <TextInput
+                placeholder="Complemento"
+                containerProps={{ style: { gridArea: 'fullAddress' } }}
+                error={errors.fullAddress}
+                {...register('fullAddress')}
+              />
 
-            <TextInput
-              placeholder="Bairro"
-              required
-              containerProps={{ style: { gridArea: 'neighborhood' } }}
-              error={errors.neighborhood}
-              {...register('neighborhood')}
-            />
+              <TextInput
+                placeholder="Bairro"
+                required
+                containerProps={{ style: { gridArea: 'neighborhood' } }}
+                error={errors.neighborhood}
+                {...register('neighborhood')}
+              />
 
-            <TextInput
-              placeholder="Cidade"
-              required
-              containerProps={{ style: { gridArea: 'city' } }}
-              error={errors.city}
-              {...register('city')}
-            />
+              <TextInput
+                placeholder="Cidade"
+                required
+                containerProps={{ style: { gridArea: 'city' } }}
+                error={errors.city}
+                {...register('city')}
+              />
 
-            <TextInput
-              placeholder="UF"
-              required
-              maxLength={2}
-              containerProps={{ style: { gridArea: 'state' } }}
-              error={errors.state}
-              {...register('state')}
-            />
+              <TextInput
+                placeholder="UF"
+                required
+                maxLength={2}
+                containerProps={{ style: { gridArea: 'state' } }}
+                error={errors.state}
+                {...register('state')}
+              />
+            </fieldset>
           </form>
         </DeliveryCard>
 
@@ -206,32 +208,34 @@ export default function Checkout() {
           </div>
 
           <PaymentOptions>
-            <Radio
-              isSelected={selectedPayment === 'credit'}
-              {...register('paymentMethod')}
-              value="credit"
-            >
-              <CreditCard size={16} />
-              <span>Cartão de Crédito</span>
-            </Radio>
+            <fieldset disabled={isEmpty}>
+              <Radio
+                isSelected={selectedPayment === 'credit'}
+                {...register('paymentMethod')}
+                value="credit"
+              >
+                <CreditCard size={16} />
+                <span>Cartão de Crédito</span>
+              </Radio>
 
-            <Radio
-              isSelected={selectedPayment === 'debit'}
-              {...register('paymentMethod')}
-              value="debit"
-            >
-              <Bank size={16} />
-              <span>Cartão de Débito</span>
-            </Radio>
+              <Radio
+                isSelected={selectedPayment === 'debit'}
+                {...register('paymentMethod')}
+                value="debit"
+              >
+                <Bank size={16} />
+                <span>Cartão de Débito</span>
+              </Radio>
 
-            <Radio
-              isSelected={selectedPayment === 'cash'}
-              {...register('paymentMethod')}
-              value="cash"
-            >
-              <Money size={16} />
-              <span>Dinheiro</span>
-            </Radio>
+              <Radio
+                isSelected={selectedPayment === 'cash'}
+                {...register('paymentMethod')}
+                value="cash"
+              >
+                <Money size={16} />
+                <span>Dinheiro</span>
+              </Radio>
+            </fieldset>
           </PaymentOptions>
         </PaymentCard>
       </DetailsContainer>

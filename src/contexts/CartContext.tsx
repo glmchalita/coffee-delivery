@@ -1,17 +1,15 @@
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { OrderInfo } from '../pages/Checkout'
-
-export interface CartItem {
-  id: string
-  quantity: number
-}
-
-interface Order extends OrderInfo {
-  id: number
-  items: CartItem[]
-}
+import {
+  addItemAction,
+  checkoutCartAction,
+  decrementItemQuantityAction,
+  incrementItemQuantityAction,
+  removeItemAction,
+} from '../reducers/cart/action'
+import { cartReducer, CartItem, Order } from '../reducers/cart/reducer'
 
 interface CartContextType {
   cart: CartItem[]
@@ -32,72 +30,106 @@ interface CartContextProviderProps {
 export default function CartContextProvider({
   children,
 }: CartContextProviderProps) {
-  const [cart, setCart] = useState<CartItem[]>([])
-  const [orders, setOrders] = useState<Order[]>([])
-  const [itemAdded, setItemAdded] = useState<string[]>([])
+  const [cartState, dispatch] = useReducer(
+    cartReducer,
+    {
+      cart: [],
+      orders: [],
+    },
+    (cartState) => {
+      const storedStateAsJSON = localStorage.getItem(
+        '@coffee-delivery:cart-state-1.0.0',
+      )
+
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON)
+      }
+
+      return cartState
+    },
+  )
+  // const [cart, setCart] = useState<CartItem[]>([])
+  // const [orders, setOrders] = useState<Order[]>([])
+  // const [itemAdded, setItemAdded] = useState<string[]>([])
+
+  const { cart, orders } = cartState
+
   const navigate = useNavigate()
 
   function addToCart(newItem: CartItem) {
-    const isItemAdded = itemAdded.find((id) => id === newItem.id)
+    dispatch(addItemAction(newItem))
+    // const isItemAdded = itemAdded.find((id) => id === newItem.id)
 
-    if (isItemAdded) {
-      setCart(
-        cart.map((item) => {
-          if (item.id === newItem.id) {
-            return { ...item, quantity: item.quantity + newItem.quantity }
-          } else {
-            return item
-          }
-        }),
-      )
-    } else {
-      setCart((state) => [...state, newItem])
-      setItemAdded((state) => [...state, newItem.id])
-    }
+    // if (isItemAdded) {
+    //   setCart(
+    //     cart.map((item) => {
+    //       if (item.id === newItem.id) {
+    //         return { ...item, quantity: item.quantity + newItem.quantity }
+    //       } else {
+    //         return item
+    //       }
+    //     }),
+    //   )
+    // } else {
+    //   setCart((state) => [...state, newItem])
+    //   setItemAdded((state) => [...state, newItem.id])
+    // }
   }
 
   function removeFromCart(itemId: string) {
-    const newCartWithoutItemToRemove = cart.filter((item) => item.id !== itemId)
+    dispatch(removeItemAction(itemId))
+    // const newCartWithoutItemToRemove = cart.filter((item) => item.id !== itemId)
 
-    setCart(newCartWithoutItemToRemove)
+    // setCart(newCartWithoutItemToRemove)
   }
 
   function incrementQuantity(itemId: string) {
-    setCart(
-      cart.map((item) => {
-        if (item.id === itemId) {
-          return { ...item, quantity: item.quantity + 1 }
-        } else {
-          return item
-        }
-      }),
-    )
+    dispatch(incrementItemQuantityAction(itemId))
+    // setCart(
+    //   cart.map((item) => {
+    //     if (item.id === itemId) {
+    //       return { ...item, quantity: item.quantity + 1 }
+    //     } else {
+    //       return item
+    //     }
+    //   }),
+    // )
   }
 
   function decrementQuantity(itemId: string) {
-    setCart(
-      cart.map((item) => {
-        if (item.id === itemId && item.quantity > 1) {
-          return { ...item, quantity: item.quantity - 1 }
-        } else {
-          return item
-        }
-      }),
-    )
+    dispatch(decrementItemQuantityAction(itemId))
+    // setCart(
+    //   cart.map((item) => {
+    //     if (item.id === itemId && item.quantity > 1) {
+    //       return { ...item, quantity: item.quantity - 1 }
+    //     } else {
+    //       return item
+    //     }
+    //   }),
+    // )
   }
 
   function checkoutCart(data: OrderInfo) {
-    const newOrder = {
-      id: new Date().getTime(),
-      items: cart,
-      ...data,
-    }
+    dispatch(checkoutCartAction(data, navigate))
+    // const newOrder = {
+    //   id: new Date().getTime(),
+    //   items: cart,
+    //   ...data,
+    // }
 
-    setOrders((state) => [...state, newOrder])
-    setCart([])
+    // setOrders((state) => [...state, newOrder])
+    // setCart([])
 
-    navigate(`/order/${newOrder.id}/sucess`)
+    // navigate(`/order/${newOrder.id}/sucess`)
   }
+
+  useEffect(() => {
+    if (cartState) {
+      const stateJSON = JSON.stringify(cartState)
+
+      localStorage.setItem('@coffee-delivery:cart-state-1.0.0', stateJSON)
+    }
+  }, [cartState])
 
   return (
     <CartContext.Provider

@@ -46,7 +46,8 @@ const BaseCard = styled.div`
 export const DeliveryCard = styled(BaseCard)`
   margin-bottom: 0.75rem;
 
-  form {
+  form fieldset {
+    border: 0;
     display: grid;
     grid-template-areas:
       'cep . .'
@@ -61,9 +62,12 @@ export const DeliveryCard = styled(BaseCard)`
 export const PaymentCard = styled(BaseCard)``
 
 export const PaymentOptions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  fieldset {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 0;
+  }
 `
 export const OrderContainer = styled.div``
 
