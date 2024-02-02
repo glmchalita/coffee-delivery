@@ -48,10 +48,6 @@ export const HeaderAside = styled.aside`
 
     position: relative;
 
-    &:focus-visible {
-      box-shadow: 0 0 0 2px ${({ theme }) => theme.color['yellow-500']};
-    }
-
     span {
       font: ${({ theme }) => theme.font['text-s']};
       color: ${({ theme }) => theme.color.white};
@@ -68,6 +64,14 @@ export const HeaderAside = styled.aside`
       top: 0px;
       right: 0px;
       transform: translate(50%, -50%);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.color['yellow-500']};
+    }
+
+    &.active {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.color['yellow-500']};
     }
   }
 `
