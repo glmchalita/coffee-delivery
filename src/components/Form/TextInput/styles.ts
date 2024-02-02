@@ -23,6 +23,10 @@ export const TextInputContainer = styled.label<{ $required?: boolean }>`
     &::placeholder {
       color: ${({ theme }) => theme.color['gray-600']};
     }
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 
   transition: all 0.2s;

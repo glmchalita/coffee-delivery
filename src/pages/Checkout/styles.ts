@@ -209,6 +209,10 @@ export const OrderButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.color['yellow-700']};
   }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.color['yellow-700']};
+  }
 `
 
 export const EmptyCart = styled.div`
