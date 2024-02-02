@@ -250,7 +250,7 @@ export default function Checkout() {
 
               <span>Carrinho está vazio</span>
 
-              <OrderButton type="submit" form="order">
+              <OrderButton type="button">
                 <NavLink to="/">Voltar para o início</NavLink>
               </OrderButton>
             </EmptyCart>
