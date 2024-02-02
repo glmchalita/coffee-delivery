@@ -48,6 +48,10 @@ export const HeaderAside = styled.aside`
 
     position: relative;
 
+    &:focus-visible {
+      box-shadow: 0 0 0 2px ${({ theme }) => theme.color['yellow-500']};
+    }
+
     span {
       font: ${({ theme }) => theme.font['text-s']};
       color: ${({ theme }) => theme.color.white};

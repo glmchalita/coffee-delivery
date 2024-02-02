@@ -1,6 +1,12 @@
 import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
+  :focus-visible {
+    outline: transparent;
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.color['purple-500']};
+    border-radius: 6px;
+  }
+
     * {
     margin: 0;
     padding: 0;

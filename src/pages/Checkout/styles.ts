@@ -56,6 +56,15 @@ export const DeliveryCard = styled(BaseCard)`
       'neighborhood city state';
     grid-template-columns: 200px 1fr 60px;
     grid-gap: 16px 12px;
+
+    &:disabled label {
+      background-color: ${({ theme }) => theme.color['gray-500']};
+      cursor: not-allowed;
+
+      input {
+        cursor: not-allowed;
+      }
+    }
   }
 `
 
@@ -67,6 +76,11 @@ export const PaymentOptions = styled.div`
     align-items: center;
     gap: 0.75rem;
     border: 0;
+
+    &:disabled label {
+      background-color: ${({ theme }) => theme.color['gray-500']};
+      cursor: not-allowed;
+    }
   }
 `
 export const OrderContainer = styled.div``
