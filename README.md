@@ -30,6 +30,7 @@ This project was developed following this technologies:
 - [React](https://react.dev/)
 - [react-router-dom](https://reactrouter.com/en/main)
 - [react-hook-form](https://react-hook-form.com/)
+- [styled-components](https://styled-components.com/)
 - [Typescript](https://www.typescriptlang.org/)
 - [Vite.js](https://vitejs.dev/)
 
